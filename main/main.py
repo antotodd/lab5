@@ -8,6 +8,7 @@ import flask
 import config
 import util
 
+
 app = flask.Flask(__name__)
 app.config.from_object(config)
 app.jinja_env.line_statement_prefix = '#'
@@ -20,7 +21,7 @@ import admin
 import auth
 import task
 import user
-
+import contact
 
 if config.DEVELOPMENT:
   from werkzeug import debug
@@ -72,7 +73,8 @@ def profile():
   if form.validate_on_submit():
     form.populate_obj(user_db)
     user_db.put()
-    return flask.redirect(flask.url_for('welcome'))
+    flask.flash('New contact was successfully created!', category='success')
+    return flask.redirect(flask.url_for('contact_list', order='-created'))
 
   if flask.request.path.startswith('/_s/'):
     return util.jsonify_model_db(user_db)
